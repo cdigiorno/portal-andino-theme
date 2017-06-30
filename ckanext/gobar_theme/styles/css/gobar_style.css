@@ -7660,8 +7660,6 @@ div#background-container {
         color: #767676; }
       #search-results .search-and-order .order select {
         max-width: 60%; }
-  #search-results .search-error strong {
-    font-weight: 500; }
   #search-results .pagination {
     width: 100%; }
 
@@ -8947,12 +8945,13 @@ div#background-container {
       #edit-group-container #edit-group form .image-upload a.btn, #edit-group-container #new-group form .image-upload a.btn, #new-group-container #edit-group form .image-upload a.btn, #new-group-container #new-group form .image-upload a.btn {
         margin-left: 0;
         text-transform: uppercase;
-        cursor: pointer;
-        padding: 12px; }
+        padding: 12px;
+        cursor: pointer; }
       #edit-group-container #edit-group form .image-upload a.btn-remove-url, #edit-group-container #new-group form .image-upload a.btn-remove-url, #new-group-container #edit-group form .image-upload a.btn-remove-url, #new-group-container #new-group form .image-upload a.btn-remove-url {
         padding: 0 4px; }
       #edit-group-container #edit-group form .image-upload a.hover, #edit-group-container #new-group form .image-upload a.hover, #new-group-container #edit-group form .image-upload a.hover, #new-group-container #new-group form .image-upload a.hover {
-        color: white; }
+        color: white;
+        cursor: pointer; }
       #edit-group-container #edit-group form button, #edit-group-container #new-group form button, #new-group-container #edit-group form button, #new-group-container #new-group form button {
         padding: 12px; }
     #edit-group-container #edit-group #delete-modal .modal-content, #edit-group-container #new-group #delete-modal .modal-content, #new-group-container #edit-group #delete-modal .modal-content, #new-group-container #new-group #delete-modal .modal-content {
