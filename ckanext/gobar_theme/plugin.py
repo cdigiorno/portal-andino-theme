@@ -1,9 +1,12 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from ckan.plugins import implements, IRoutes
+import ckanext.gobar_theme_base as gobar_theme_base
+import ckanext.gobar_theme_base.routing as gobar_routes_base
 import ckanext.gobar_theme.helpers as gobar_helpers
 import ckanext.gobar_theme.routing as gobar_routes
 import ckanext.gobar_theme.actions as gobar_actions
+import os
 
 
 class Gobar_ThemePlugin(plugins.SingletonPlugin):
@@ -13,37 +16,48 @@ class Gobar_ThemePlugin(plugins.SingletonPlugin):
     implements(plugins.IActions)
 
     def get_actions(self):
-        return {'package_activity_list_html': gobar_actions.package_activity_list_html,
-                'gobar_status_show': gobar_actions.gobar_status_show}
+        return {'gobar_status_show': gobar_actions.gobar_status_show}
+
+    def get_base_dir(self, subdir):
+        base_theme_dir = os.path.dirname(gobar_theme_base.__file__)
+        rootdir = os.path.dirname(os.path.dirname(base_theme_dir))
+        return os.path.join(rootdir, 'ckanext', 'gobar_theme_base', subdir)
+
+    def add_in_config_file(self, key, config , dir):
+        config[key] = ','.join([
+            dir, config.get(key, '')
+        ])
+
+    def add_base_templates(self, config):
+        template_dir = self.get_base_dir('templates')
+        self.add_in_config_file('extra_template_paths', config, template_dir)
+
+    def add_base_public(self, config):
+        public_dir = self.get_base_dir('public')
+        self.add_in_config_file('extra_public_paths', config, public_dir)
+
+    def add_base_js(self):
+        js_dir = self.get_base_dir('js')
+        import ckan.lib.fanstatic_resources
+        ckan.lib.fanstatic_resources.create_library('gobar_js', js_dir)
 
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
+        self.add_base_templates(config_)
         toolkit.add_public_directory(config_, 'public')
+        self.add_base_public(config_)
         toolkit.add_resource('styles/css', 'gobar_css')
-        toolkit.add_resource('js', 'gobar_js')
+        toolkit.add_resource('js', 'andino_gobar_js')
+        self.add_base_js()
         toolkit.add_resource('recline', 'gobar_data_preview')
 
     def before_map(self, routing_map):
-        gobar_router = gobar_routes.GobArRouter(routing_map)
+        gobar_router = gobar_routes.GobArRouter(routing_map, gobar_routes_base)
         gobar_router.set_routes()
         return routing_map
 
     def get_helpers(self):
         return {
-            'organization_tree': gobar_helpers.organization_tree,
-            'get_faceted_groups': gobar_helpers.get_faceted_groups,
-            'join_groups': gobar_helpers.join_groups,
-            'cut_text': gobar_helpers.cut_text,
-            'cut_img_path': gobar_helpers.cut_img_path,
-            'organizations_with_packages': gobar_helpers.organizations_with_packages,
-            'get_pkg_extra': gobar_helpers.get_pkg_extra,
-            'get_facet_items_dict': gobar_helpers.get_facet_items_dict,
-            'get_theme_config': gobar_helpers.get_theme_config,
-            'url_join': gobar_helpers.url_join,
-            'json_loads': gobar_helpers.json_loads,
             'update_frequencies': gobar_helpers.update_frequencies,
-            'field_types': gobar_helpers.field_types,
-            'render_ar_datetime': gobar_helpers.render_ar_datetime,
-            'accepted_mime_types': gobar_helpers.accepted_mime_types,
-            'valid_length': gobar_helpers.valid_length
+            'get_theme_config': gobar_helpers.get_theme_config
         }
