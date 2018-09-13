@@ -80,6 +80,7 @@ setup(
         generate-data-json = ckanext.gobar_theme.lib.cli:GenerateDataJsonCommand
         generate-catalog-xlsx= ckanext.gobar_theme.lib.cli:GenerateCatalogXlsxCommand
         clean-datastore= ckanext.gobar_theme.lib.cli:CleanDatastoreCommand
+        updat-datastore= ckanext.gobar_theme.lib.cli:UpdateDatastoreCommand
     ''',
 
     # If you are changing from the default layout of your extension, you may
