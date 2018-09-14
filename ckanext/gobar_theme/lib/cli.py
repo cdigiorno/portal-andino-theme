@@ -109,16 +109,16 @@ class UpdateDatastoreCommand(cli.CkanCommand):
             site_url = 'http://' + site_url
 
         # Acumulo todos los ids de los recursos del nodo
-        node_resource_ids = []
+        resources = []
         context = {'model': model, 'session': model.Session, 'user': site_user}
         data_dict = {'query': 'name:', 'limit': None, 'offset': 0}
         resultado = logic.get_action('resource_search')(context, data_dict).get('results', [])
         for resource in resultado:
-            node_resource_ids.append(resource)
+            resources.append(resource)
 
         # Para cada recurso del nodo, lo subo al Datastore si no existe o lo edito en caso contrario
         rc = RemoteCKAN(site_url, apikey)
-        for resource in node_resource_ids:
+        for resource in resources:
             LOGGER.info("Actualizando el recurso %s", resource.get('name'))
             try:
                 rc.action.datastore_delete(resource_id=resource.get('id'), force=True)
