@@ -116,7 +116,7 @@ class UpdateDatastoreCommand(cli.CkanCommand):
         for resource in resultado:
             resources.append(resource)
 
-        # Para cada recurso del nodo, lo subo al Datastore si no existe o lo edito en caso contrario
+        # Para cada recurso del nodo, lo subo al Datastore (si ya existe, lo borro)
         rc = RemoteCKAN(site_url, apikey)
         for resource in resources:
             LOGGER.info("Actualizando el recurso %s", resource.get('name'))
