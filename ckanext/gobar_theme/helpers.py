@@ -5,6 +5,7 @@ import ckan.lib.helpers as ckan_helpers
 import ckan.lib.search as search
 import ckan.logic as logic
 import moment
+import subprocess
 from ckan.common import request, c, g, _
 import ckan.lib.formatters as formatters
 import subprocess
@@ -498,7 +499,8 @@ def get_default_background_configuration():
 
 
 def get_gtm_code():
-    return config.get('ckan.google_tag_manager.gtm_container_id', None)
+    return get_theme_config('google_tag_manager.container-id') or \
+           config.get('ckan.google_tag_manager.gtm_container_id', '')
 
 
 def get_current_url_for_resource(package_id, resource_id):
@@ -557,6 +559,25 @@ def get_default_series_api_url():
     return config.get('seriestiempoarexplorer.default_series_api_uri', '')
 
 
+def get_current_terminal_username():
+    return subprocess.check_output("whoami").strip()
+
+def get_google_analytics_id():
+    return get_theme_config('google_analytics.id') or \
+           config.get('googleanalytics.id', '')
+
+
+def search_for_value_in_config_file(field):
+    # Solamente queremos utilizar el valor default cuando no existe uno ingresado por el usuario.
+    try:
+        value = subprocess.check_output(
+            'grep -E "^{}[[:space:]]*=[[:space:]]*" '
+            '/etc/ckan/default/production.ini | tr -d [[:space:]]'.format(field), shell=True).strip()
+        return value.replace(field, '')[1:]
+    except:
+        return ''
+
+
 def search_for_cron_jobs_and_remove(comment_to_search_for):
     # Buscamos y eliminamos los cron jobs que contengan el comment especificado por parámetro
     if comment_to_search_for:
@@ -574,7 +595,3 @@ def create_or_update_cron_job(command, hour, minute, comment=''):
     job.hour.on(hour)
     job.minute.on(minute)
     cron.write()
-
-
-def get_current_terminal_username():
-    return subprocess.check_output("whoami").strip()
